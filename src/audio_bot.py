@@ -1,7 +1,8 @@
+from os import makedirs
+from os.path import basename, join, exists
+from urllib.request import urlopen
 from telebot import TeleBot
-from soundfile import read, write
-
-TOKEN = '1258276553:AAHVt-5LwAFnqlvYzm7VdfXtwWn46vXmWQ8'
+from setup import TOKEN
 
 bot = TeleBot(TOKEN)
 
@@ -10,12 +11,13 @@ bot = TeleBot(TOKEN)
 def handle_voice_msg(message):
     user_id = message.json['from']['id']
     file_id = message.json['voice']['file_id']
-    data, samplerate = read(bot.get_file_url(file_id))
-    print(samplerate)
-    write(f'voices/{user_id}/{bot.get_file(file_id)["file_path"]}',
-          data,
-          samplerate
-          )
+    data = urlopen(bot.get_file_url(file_id)).read()
+    target_path = join("voices", str(user_id))
+    if not exists(target_path):
+        makedirs(target_path)
+    with open(join(target_path, basename(bot.get_file(file_id).file_path)),
+              'wb') as f:
+        f.write(data)
 
 
 bot.polling(timeout=20)
