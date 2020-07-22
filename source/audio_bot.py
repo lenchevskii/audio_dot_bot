@@ -5,9 +5,6 @@ from os.path                            import basename, join, exists, splitext
 from telebot                            import TeleBot, apihelper
 from setup                              import TOKEN
 from os                                 import makedirs
-from smartproxy.smartproxy              import Requests
-
-# Requests.request(request_type='get', url='https://api.telegram.org')
 
 apihelper.proxy = {'http': '144.217.101.245:3129'}
 
