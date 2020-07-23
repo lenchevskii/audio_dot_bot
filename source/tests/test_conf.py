@@ -1,7 +1,7 @@
+from telethon.sessions import StringSession
+from telethon import TelegramClient
 import pytest
 import os
-from telethon import TelegramClient
-from telethon.sessions import StringSession
 
 # Your API ID, hash and session string here
 api_id = int(os.environ["TELEGRAM_APP_ID"])
@@ -25,7 +25,3 @@ async def client() -> TelegramClient:
 
     await client.disconnect()
     await client.disconnected
-
-
-if __name__ == '__main__':
-    client()
