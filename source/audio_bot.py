@@ -1,5 +1,6 @@
 from modules.face_detection.face_detect import has_face
 from urllib.request                     import urlopen
+from urllib.parse                       import urlparse
 from subprocess                         import call
 from os.path                            import basename, join, exists, splitext
 from telebot                            import TeleBot, apihelper
@@ -11,10 +12,12 @@ apihelper.proxy = {'http': '144.217.101.245:3129'}
 bot = TeleBot(TOKEN)
 
 
-def convert_to_wav(path):
+def convert_to_wav(path, target_directory):
     call(
         ' '.join(['ffmpeg', '-i', path, '-ar', '16000',
-                  ''.join([splitext(path)[0], ".wav"])]),
+                  ''.join([target_directory, "/",
+                           splitext(basename(urlparse(path).path))[0],
+                           ".wav"])]),
         shell=True
     )
 
@@ -23,17 +26,12 @@ def convert_to_wav(path):
 def handle_voice_msg(message):
     user_id = message.json['from']['id']
     file_id = message.json['voice']['file_id']
-    data = urlopen(bot.get_file_url(file_id)).read()
+    file_url = bot.get_file_url(file_id)
     target_directory = join("static", "voices", str(user_id))
-    data_path = join(target_directory,
-                     basename(bot.get_file(file_id).file_path))
 
     if not exists(target_directory):
         makedirs(target_directory)
-    if not exists(data_path):
-        with open(data_path, 'wb') as f:
-            f.write(data)
-        convert_to_wav(data_path)
+        convert_to_wav(file_url, target_directory)
 
 
 @bot.message_handler(content_types=['photo'])
@@ -46,9 +44,8 @@ def handle_photo_msg(message):
         target_directory = join("static", "photo", str(user_id))
         data_path = join(target_directory,
                          basename(bot.get_file(file_id).file_path))
-        if not exists(target_directory):
-            makedirs(target_directory)
         if not exists(data_path):
+            makedirs(target_directory)
             with open(data_path, 'wb') as f:
                 f.write(data)
 
