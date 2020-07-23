@@ -1,1 +1,3 @@
-TOKEN = 'Here is your token'
+from os import environ
+
+TOKEN = environ["TOKEN"]
