@@ -12,11 +12,11 @@ apihelper.proxy = {'http': '144.217.101.245:3129'}
 bot = TeleBot(TOKEN)
 
 
-def convert_to_wav(path, target_directory):
+def convert_to_wav(url, target_directory):
     call(
-        ' '.join(['ffmpeg', '-i', path, '-ar', '16000',
+        ' '.join(['ffmpeg', '-i', url, '-ar', '16000',
                   ''.join([target_directory, "/",
-                           splitext(basename(urlparse(path).path))[0],
+                           splitext(basename(urlparse(url).path))[0],
                            ".wav"])]),
         shell=True
     )
@@ -27,7 +27,7 @@ def handle_voice_msg(message):
     user_id = message.json['from']['id']
     file_id = message.json['voice']['file_id']
     file_url = bot.get_file_url(file_id)
-    target_directory = join("static", "voices", str(user_id))
+    target_directory = join("static", "voice", str(user_id))
 
     if not exists(target_directory):
         makedirs(target_directory)
