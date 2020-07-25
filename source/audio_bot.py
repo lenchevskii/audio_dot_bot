@@ -12,12 +12,10 @@ apihelper.proxy = {'http': '144.217.101.245:3129'}
 bot = TeleBot(TOKEN)
 
 
-def convert_to_wav(url, target_directory):
+def convert_to_wav(url, file_path):
     call(
         ' '.join(['ffmpeg', '-i', url, '-ar', '16000',
-                  ''.join([target_directory, "/",
-                           splitext(basename(urlparse(url).path))[0],
-                           ".wav"])]),
+                  file_path]),
         shell=True
     )
 
@@ -28,10 +26,14 @@ def handle_voice_msg(message):
     file_id = message.json['voice']['file_id']
     file_url = bot.get_file_url(file_id)
     target_directory = join("static", "voice", str(user_id))
+    file_path = ''.join([target_directory, "/",
+                         splitext(basename(urlparse(file_url).path))[0],
+                         ".wav"])
 
-    if not exists(target_directory):
-        makedirs(target_directory)
-        convert_to_wav(file_url, target_directory)
+    if not exists(file_path):
+        if not exists(target_directory):
+            makedirs(target_directory)
+        convert_to_wav(file_url, file_path)
 
 
 @bot.message_handler(content_types=['photo'])
@@ -45,7 +47,8 @@ def handle_photo_msg(message):
         data_path = join(target_directory,
                          basename(bot.get_file(file_id).file_path))
         if not exists(data_path):
-            makedirs(target_directory)
+            if not exists(target_directory):
+                makedirs(target_directory)
             with open(data_path, 'wb') as f:
                 f.write(data)
 
