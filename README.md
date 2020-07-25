@@ -9,3 +9,7 @@ Create environment variables for running application (TOKEN) and tests (TELEGRAM
 ```bash
 export TOKEN=...
 ```
+
+Saving occurs on server: 
+- **../source/static/photo/user_id** for photos
+- **../source/static/voice/user_id** for audio messages
