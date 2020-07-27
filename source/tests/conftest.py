@@ -1,12 +1,13 @@
-from telethon.sessions import StringSession
-from telethon import TelegramClient
+from telethon.sessions  import StringSession
+from telethon           import TelegramClient
+from os                 import environ
+
 import pytest
-import os
 
 # Your API ID, hash and session string here
-api_id = int(os.environ["TELEGRAM_APP_ID"])
-api_hash = os.environ["TELEGRAM_APP_HASH"]
-session_str = os.environ["TELETHON_SESSION"]
+api_id = int(environ["TELEGRAM_APP_ID"])
+api_hash = environ["TELEGRAM_APP_HASH"]
+session_str = environ["TELETHON_SESSION"]
 
 
 @pytest.fixture(scope="session")
