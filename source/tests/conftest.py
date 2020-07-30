@@ -13,6 +13,7 @@ session_str = environ["TELETHON_SESSION"]
 @pytest.fixture(scope="session")
 async def client() -> TelegramClient:
     # Connect to the server
+    print('Add client')
     await client.connect()
     # Issue a high level command to start receiving message
     await client.get_me()
